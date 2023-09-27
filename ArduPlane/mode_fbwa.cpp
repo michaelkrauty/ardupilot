@@ -28,7 +28,7 @@ void ModeFBWA::update()
         // check for the user enabling FBWA taildrag takeoff mode
         bool tdrag_mode = chan->get_aux_switch_pos() == RC_Channel::AuxSwitchPos::HIGH;
         if (tdrag_mode && !plane.auto_state.fbwa_tdrag_takeoff_mode) {
-            if (plane.auto_state.highest_airspeed < plane.g.takeoff_tdrag_speed1) {
+            if (plane.auto_state.highest_airspeed < plane.g.takeoff_tdrag_speed2) {
                 plane.auto_state.fbwa_tdrag_takeoff_mode = true;
                 plane.gcs().send_text(MAV_SEVERITY_WARNING, "FBWA tdrag mode");
             }

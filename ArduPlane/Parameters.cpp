@@ -142,7 +142,7 @@ const AP_Param::Info Plane::var_info[] = {
     
     // @Param: TKOFF_TDRAG_ELEV
     // @DisplayName: Takeoff tail dragger elevator
-    // @Description: This parameter sets the amount of elevator to apply during the initial stage of a takeoff. It is used to hold the tail wheel of a taildragger on the ground during the initial takeoff stage to give maximum steering. This option should be combined with the TKOFF_TDRAG_SPD1 option and the GROUND_STEER_ALT option along with tuning of the ground steering controller. A value of zero means to bypass the initial "tail hold" stage of takeoff. Set to zero for hand and catapult launch. For tail-draggers you should normally set this to 100, meaning full up elevator during the initial stage of takeoff. For most tricycle undercarriage aircraft a value of zero will work well, but for some tricycle aircraft a small negative value (say around -20 to -30) will apply down elevator which will hold the nose wheel firmly on the ground during initial acceleration. Only use a negative value if you find that the nosewheel doesn't grip well during takeoff. Too much down elevator on a tricycle undercarriage may cause instability in steering as the plane pivots around the nosewheel. Add down elevator 10 percent at a time.
+    // @Description: This parameter sets the amount of elevator to apply during the initial stage of a takeoff. It is used to hold the tail wheel of a taildragger on the ground during the initial takeoff stage to give maximum steering. This option should be combined with the TKOFF_TDRAG_SPD1 and TKOFF_TDRAG_SPD2 options and the GROUND_STEER_ALT option along with tuning of the ground steering controller. A value of zero means to bypass the initial "tail hold" stage of takeoff. Set to zero for hand and catapult launch. For tail-draggers you should normally set this to 100, meaning full up elevator during the initial stage of takeoff. For most tricycle undercarriage aircraft a value of zero will work well, but for some tricycle aircraft a small negative value (say around -20 to -30) will apply down elevator which will hold the nose wheel firmly on the ground during initial acceleration. Only use a negative value if you find that the nosewheel doesn't grip well during takeoff. Too much down elevator on a tricycle undercarriage may cause instability in steering as the plane pivots around the nosewheel. Add down elevator 10 percent at a time.
     // @Units: %
     // @Range: -100 100
     // @Increment: 1
@@ -151,12 +151,21 @@ const AP_Param::Info Plane::var_info[] = {
 
     // @Param: TKOFF_TDRAG_SPD1
     // @DisplayName: Takeoff tail dragger speed1
-    // @Description: This parameter sets the airspeed at which to stop holding the tail down and transition to rudder control of steering on the ground. When TKOFF_TDRAG_SPD1 is reached the pitch of the aircraft will be held level until TKOFF_ROTATE_SPD is reached, at which point the takeoff pitch specified in the mission will be used to "rotate" the pitch for takeoff climb. Set TKOFF_TDRAG_SPD1 to zero to go straight to rotation. This should be set to zero for hand launch and catapult launch. It should also be set to zero for tricycle undercarriages unless you are using the method above to genetly hold the nose wheel down. For tail dragger aircraft it should be set just below the stall speed.
+    // @Description: This parameter sets the airspeed at which to begin to stop holding the tail down and transition to rudder control of steering on the ground. When TKOFF_TDRAG_SPD1 is reached the aircraft will begin to reduce its up-elevator input lineraly until TKOFF_TDRAG_SPD2 is reached. If TKOFF_TDRAG_SPD1 is zero, the tail will abruptly stop being held down at TKOFF_TDRAG_SPD2. Set TKOFF_TDRAG_SPD1 and TKOFF_TDRAG_SPD2 to zero to go straight to rotation. This should be set to zero for hand launch and catapult launch. It should also be set to zero for tricycle undercarriages unless you are using the method above to genetly hold the nose wheel down. For tail dragger aircraft it should be set just below TKOFF_TDRAG_SPD2.
     // @Units: m/s
     // @Range: 0 30
     // @Increment: 0.1
     // @User: Standard
     GSCALAR(takeoff_tdrag_speed1,     "TKOFF_TDRAG_SPD1",  0),
+
+    // @Param: TKOFF_TDRAG_SPD2
+    // @DisplayName: Takeoff tail dragger speed2
+    // @Description: This parameter sets the airspeed at which to stop holding the tail down and transition to rudder control of steering on the ground. When TKOFF_TDRAG_SPD2 is reached the pitch of the aircraft will be held level until TKOFF_ROTATE_SPD is reached, at which point the takeoff pitch specified in the mission will be used to "rotate" the pitch for takeoff climb. If TKOFF_TDRAG_SPD2 is zero, the tail will abruptly stop being held down at TKOFF_TDRAG_SPD1. Set TKOFF_TDRAG_SPD1 and TKOFF_TDRAG_SPD2 to zero to go straight to rotation. This should be set to zero for hand launch and catapult launch. It should also be set to zero for tricycle undercarriages unless you are using the method above to genetly hold the nose wheel down. For tail dragger aircraft it should be set just below the stall speed.
+    // @Units: m/s
+    // @Range: 0 30
+    // @Increment: 0.1
+    // @User: Standard
+    GSCALAR(takeoff_tdrag_speed2,     "TKOFF_TDRAG_SPD2",  0),
 
     // @Param: TKOFF_ROTATE_SPD
     // @DisplayName: Takeoff rotate speed

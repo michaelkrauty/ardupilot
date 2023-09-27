@@ -112,6 +112,7 @@ public:
         k_param_serial2_baud,           // deprecated
         k_param_takeoff_tdrag_elevator,
         k_param_takeoff_tdrag_speed1,
+        k_param_takeoff_tdrag_speed2,
         k_param_takeoff_rotate_speed,
         k_param_takeoff_throttle_slewrate,
         k_param_takeoff_throttle_max,
@@ -451,6 +452,7 @@ public:
     AP_Int8 takeoff_throttle_delay;
     AP_Int8 takeoff_tdrag_elevator;
     AP_Float takeoff_tdrag_speed1;
+    AP_Float takeoff_tdrag_speed2;
     AP_Float takeoff_rotate_speed;
     AP_Int8 takeoff_throttle_slewrate;
     AP_Float takeoff_pitch_limit_reduction_sec;

@@ -250,20 +250,49 @@ int8_t Plane::takeoff_tail_hold(void)
         // not in takeoff
         return 0;
     }
+    // initialize takeoff_tdrag variables before goto statements
+    // to avoid compiler errors.
+    float takeoff_tdrag_end_speed;
+    float takeoff_tdrag_elevator_percent;
+    bool is_set_takeoff_tdrag_speed1 = g.takeoff_tdrag_speed1 > 0;
+    bool is_set_takeoff_tdrag_speed2 = g.takeoff_tdrag_speed2 > 0;
     if (g.takeoff_tdrag_elevator == 0) {
         // no takeoff elevator set
         goto return_zero;
     }
-    if (auto_state.highest_airspeed >= g.takeoff_tdrag_speed1) {
-        // we've passed speed1. We now raise the tail and aim for
-        // level pitch. Return 0 meaning no fixed elevator setting
+    // if speed1 and speed2 are set, and we are currently between them
+    if (g.takeoff_tdrag_speed1 > 0 && g.takeoff_tdrag_speed2 > 0 &&
+        auto_state.highest_airspeed >= g.takeoff_tdrag_speed1 &&
+        auto_state.highest_airspeed < g.takeoff_tdrag_speed2) {
+        // we raise (or lower) the tail in a linear fashion until we reach speed2.
+        // calculate the percentage of the takeoff_tdrag_elevator to apply.
+        takeoff_tdrag_elevator_percent = constrain_int16(
+            100 - fabsf(
+                (auto_state.highest_airspeed - g.takeoff_tdrag_speed1) /
+                (g.takeoff_tdrag_speed2 - g.takeoff_tdrag_speed1) *
+                g.takeoff_tdrag_elevator
+            ), 0, 100);
+        if (g.takeoff_tdrag_elevator < 0) {
+            // negative elevator means we want to raise the tail
+            return -takeoff_tdrag_elevator_percent;
+        }
+        return takeoff_tdrag_elevator_percent;
+    }
+    // if speed1 is set but speed2 is not, or vice versa, use the
+    // speed that is set. Else, use speed2
+    takeoff_tdrag_end_speed = ((is_set_takeoff_tdrag_speed1 && !is_set_takeoff_tdrag_speed2) ||
+                                 (!is_set_takeoff_tdrag_speed1 && is_set_takeoff_tdrag_speed2)) ?
+                                 g.takeoff_tdrag_speed1 + g.takeoff_tdrag_speed2 : g.takeoff_tdrag_speed2;
+    if (auto_state.highest_airspeed >= takeoff_tdrag_end_speed) {
+        // we've passed speed2. We now aim for level pitch.
+        // Return 0 meaning no fixed elevator setting
         goto return_zero;
     }
     if (ahrs.pitch_sensor > auto_state.initial_pitch_cd + 1000) {
         // the pitch has gone up by more then 10 degrees over the
         // initial pitch. This may mean the nose is coming up for an
         // early liftoff, perhaps due to a bad setting of
-        // g.takeoff_tdrag_speed1. Go to level flight to prevent a
+        // g.takeoff_tdrag_speed2. Go to level flight to prevent a
         // stall
         goto return_zero;
     }

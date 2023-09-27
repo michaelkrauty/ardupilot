@@ -1,3 +1,11 @@
+Release 4.4.1-KRAUTMOD-0.1.0 26th September 2023
+------------------------------------------------
+
+Changes from 4.4.1
+
+- Changed TKOFF_TDRAG_SPD1 to TKOFF_TDRAG_SPD2, which is now the airspeed the elevator will be full up.
+- Added TKOFF_TDRAG_SPD1, which is the airspeed the elevator will begin to program from TKOFF_TDRAG_ELEV to normal.
+
 Release 4.4.1 26th September 2023
 ---------------------------------
 
